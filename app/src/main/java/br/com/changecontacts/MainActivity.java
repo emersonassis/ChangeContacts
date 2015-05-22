@@ -1,21 +1,16 @@
 package br.com.changecontacts;
 
 import android.app.Activity;
-import android.content.CursorLoader;
+import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,39 +28,40 @@ public class MainActivity extends Activity {
 
 
         final String[] projection = new String[] {
-                Contacts._ID,
+                RawContacts._ID,
+                RawContacts.DISPLAY_NAME_PRIMARY,
                 Contacts.DISPLAY_NAME,
-                Phone.NUMBER
+                Phone.NUMBER,
+                Phone.CONTACT_ID
         };
 
-        final CursorLoader contactCursor = new CursorLoader(
-                this,
-                Phone.CONTENT_URI,
-                projection,
+        Cursor contact = getContentResolver().query(
+                Phone.CONTENT_URI, projection,
+                Phone.CONTACT_ID + " = 169",
                 null,
-                null,
-                null
+                Phone.CONTACT_ID + " ASC"
         );
 
-        Cursor contact = contactCursor.loadInBackground();
         List<String> listaContato = new ArrayList<String>();
-
+        ContentValues values = null;
         if(contact.getCount() > 0) {
             contact.moveToFirst();
 
             do{
 
                 String numero = contact.getString(contact.getColumnIndex(Phone.NUMBER)).toString();
+                String idContato = contact.getString(contact.getColumnIndex(Phone.CONTACT_ID));
 
-                if (numero.equals("numero")) {
-                    Contato c = new Contato();
-                    c.setNome(contact.getString(contact.getColumnIndex(Contacts.DISPLAY_NAME)));
-                    c.setNumero(numero);
+                Contato c = new Contato();
+                c.setNome(contact.getString(contact.getColumnIndex(RawContacts.DISPLAY_NAME_PRIMARY)));
+                c.setNumero(numero);
 
-                    listaContato.add(c.getNome() + " " + c.getNumero());
-                }
+                listaContato.add("Name: " + c.getNome() + " Number: " + c.getNumero() + " _ID: " + idContato);
+
+                /*values = new ContentValues();
+                values.put(Phone.NUMBER, "9");*/
+
             }while (contact.moveToNext());
-
 
         }
         contact.close();
@@ -74,6 +70,10 @@ public class MainActivity extends Activity {
         listViewContatos = (ListView) findViewById(R.id.listaDeContatos);
         listViewContatos.setAdapter(adpter);
 
+
+        /*if (values != null) {
+            getContentResolver().update(RawContacts.CONTENT_URI, values, null, null);
+        }*/
 
     }
 
