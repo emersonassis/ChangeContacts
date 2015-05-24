@@ -1,27 +1,32 @@
 package br.com.changecontacts;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 /**
- * Created by root on 23/05/15.
+ * Created by emerson on 23/05/15.
  */
 public class ContatoAdapter extends ArrayAdapter<Contato>{
 
+    ListView listView = null;
 
     public ContatoAdapter(Context context, ArrayList<Contato> arrayAdapterContato) {
         super(context, 0, arrayAdapterContato);
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
+
+        listView = (ListView) parent;
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         Contato contato = getItem(position);
 
@@ -35,7 +40,29 @@ public class ContatoAdapter extends ArrayAdapter<Contato>{
         txtNome.setText(contato.getNome());
         txtNumero.setText(contato.getNumero());
 
+        convertView = this.setBackgroundColor(position, convertView, parent);
+
         return  convertView;
     }
+
+    public View setBackgroundColor(int position, View current, ViewGroup parent){
+
+        View view = (View) current;
+        ListView listView = (ListView) parent;
+        int backgroundColor = 0;
+
+        if (listView.isItemChecked(position)){
+            backgroundColor = Color.argb(0xFF, 0x31, 0xB6, 0xE7);
+        }else{
+            backgroundColor = Color.TRANSPARENT;
+        }
+
+        view.setBackgroundColor(backgroundColor);
+
+        return view;
+
+    }
+
+
 
 }
