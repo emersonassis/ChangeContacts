@@ -53,9 +53,8 @@ public class ContatoAdapter extends ArrayAdapter<Contato>{
 
         if (listView.isItemChecked(position)){
             backgroundColor = Color.argb(0xFF, 0x31, 0xB6, 0xE7);
-        }else{
+        }else
             backgroundColor = Color.TRANSPARENT;
-        }
 
         view.setBackgroundColor(backgroundColor);
 
