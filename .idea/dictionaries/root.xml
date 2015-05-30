@@ -7,6 +7,7 @@
       <w>numero</w>
       <w>posicao</w>
       <w>selecionado</w>
+      <w>selecionados</w>
     </words>
   </dictionary>
 </component>
